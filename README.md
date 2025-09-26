@@ -39,13 +39,11 @@ SUNO AIで制作した楽曲で音楽配信する新人アーティスト「appr
 - [「いのちの理由」](https://linkco.re/Hb9nfMcM)
 - [TikTok @appriver12](https://www.tiktok.com/@appriver12?is_from_webapp=1&sender_device=pc)
 
-<!-- CI: pr-required-check smoke v2 -->
+## 運用クイックガイド（開発）
 
-## 運用クイックガイド（本番）
-
-- フロー: 開発ブランチ → PR作成 → Vercelプレビュー確認 → Squash and merge（線形履歴）→ 本番デプロイ確認
+- フロー: ブランチ作成 → 変更 → PR作成 → Vercelプレビュー確認 → Squash and merge → 開発Productionデプロイ確認
 - プレビューURL: PRの「Checks → Vercel」から確認
-- 本番確認: https://www.appriver.jp/#songs-lyrics で表示・検索・歌詞モーダル・配信リンクを確認
+- Production（開発用）: Vercelのプロジェクト「appriver-claude-dev」→ 最新のProductionデプロイの Domains
 
 ### 楽曲追加の要点
 
@@ -54,17 +52,15 @@ SUNO AIで制作した楽曲で音楽配信する新人アーティスト「appr
 - 歌詞: バッククォート`を含めない（テンプレート文字列使用のため）
 - 配信リンク: LinkCore等のURL
 
-### CI / ルールの要点（Ruleset: main-protection）
+### CI / ルールの要点
 
-- 必須チェック: `CI / smoke (pull_request)`（無印の`CI / smoke`は必須にしない）
-- マージ: Squashのみ、`Require linear history` 有効
-- レビュー: Required approvals = 0、`Require conversation resolution` 有効
+- 必須チェック（推奨）: `CI / smoke (pull_request)`
 - verify: PR差分のコミットメッセージに `[Codex]` または `[Claude]` を含める
 - secrets-scan: TruffleHog v3 + 差分スキャン + `.trufflehogignore` で `songs-data.js` とバックアップを除外
 - Prettier: `.github/workflows/*.yml` は整形対象外（.prettierignore 済み）
 
 ### トラブルシューティング
 
-- RequiredがExpectedのまま: ルールの必須チェック名を「CI / smoke (pull_request)」に統一
-- verifyで履歴取得エラー: checkoutに`fetch-depth: 0`、比較は`base.sha..HEAD`
+- RequiredがExpectedのまま: ルールで必須チェック名を「CI / smoke (pull_request)」に統一
+- verifyで`origin/main..HEAD`のエラー: checkoutに`fetch-depth: 0`、比較は`base.sha..HEAD`（現状対応済み）
 - secrets-scan誤検知: `@v3`固定・`--only-verified`・`.trufflehogignore`の見直し
