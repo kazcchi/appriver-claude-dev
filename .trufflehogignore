@@ -2,4 +2,10 @@
 # 大容量データ/歌詞のみのファイルは誤検知を避ける
 songs-data.js
 songs-data.js.backup*
+# Workflows and proposal files (no secrets stored here)
+.github/workflows/promotion-receiver.yml (official-proposal)
+.github/workflows/promote.yml
+.github/workflows/*.yml
+docs/**
+tools/song-builder/**
  
